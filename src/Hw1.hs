@@ -28,8 +28,10 @@ import Prelude  hiding (replicate, sum, reverse)
 -- >>> sumList [1, 3, 5, 7, 9, 11]
 -- 36
 
+-- used slides for this
 sumList :: [Int] -> Int
-sumList xs = error "TBD:sumList"
+sumList [] = 0
+sumList (x:xs) = x + sumList(xs) 
 
 
 -- | `digitsOfInt n` should return `[]` if `n` is not positive,
@@ -43,8 +45,28 @@ sumList xs = error "TBD:sumList"
 -- [3, 5, 2, 6, 6, 3]
 
 digitsOfInt :: Int -> [Int]
-digitsOfInt n = error "TBD:digitsOfInt"
+digitsOfInt n
+    | n <= 0    = []   
+    | otherwise = go n  
+    where
+        go 0 = []                               -- Base case
+        go num = go (num `div` 10) ++ [num `mod` 10]  
+-- the num 'div' 10 is basically dividing the given num by 10 
+{-
+Memory:
 
+num = 3124
+3124/ 10 = 312 (new num)
+3124 mod 10 = 4 (Which gets added to the list) [4]
+312 / 10 = 31 (new num)
+312 mod 10 = 2 [24]
+31 / 10 = 3
+31 mod 10 = 1 [124]
+3/10 = 0
+3 mod 10 = 3 [3124]
+Base Case reached n = 0 returns 0
+
+-}
 
 -- | `digits n` returns the list of digits of `n`
 --
@@ -79,7 +101,9 @@ digits n = digitsOfInt (abs n)
 -- 2
 
 additivePersistence :: Int -> Int
-additivePersistence n = error "TBD"
+additivePersistence n 
+    | n < 10    = 0  -- Base case: single-digit numbers have additive persistence 0
+    | otherwise = 1 + additivePersistence (sumList(digitsOfInt n))
 
 -- | digitalRoot n is the digit obtained at the end of the sequence
 --   computing the additivePersistence
@@ -91,7 +115,9 @@ additivePersistence n = error "TBD"
 -- 9
 
 digitalRoot :: Int -> Int
-digitalRoot n = error "TBD"
+digitalRoot n 
+    | n < 10    = n  -- Base case: single-digit numbers have the same digital root
+    | otherwise = digitalRoot (sumList (digitsOfInt n))
 
 
 -- | listReverse [x1,x2,...,xn] returns [xn,...,x2,x1]
@@ -106,7 +132,9 @@ digitalRoot n = error "TBD"
 -- ["bicycle", "my", "ride", "to", "want", "i"]
 
 listReverse :: [a] -> [a]
-listReverse xs = error "TBD"
+listReverse [] = []               -- Base case: an empty list is reversed to an empty list
+listReverse (x:xs) = listReverse xs ++ [x]  -- Reverse the rest of the list and append x to the end
+
 
 -- | In Haskell, a `String` is a simply a list of `Char`, that is:
 --
@@ -120,4 +148,4 @@ listReverse xs = error "TBD"
 -- False
 
 palindrome :: String -> Bool
-palindrome w = error "TBD"
+palindrome w = w == listReverse w
